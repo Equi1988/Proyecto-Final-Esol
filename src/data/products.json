@@ -1,0 +1,51 @@
+[
+    {
+        "id": 1,
+        "title": "Sony Playstation PS Vita",
+        "price": 80000,
+        "description": "Sony Playstation Portatil",
+        "code": "SP003",
+        "stock": 1,
+        "category": "Consola"
+    },
+    {
+        "id": 2,
+        "title": "Sony Playstation 5 Slim",
+        "description": "Sony",
+        "price": 1200000,
+        "code": "SP002",
+        "stock": 9,
+        "category": [
+            "Consola"
+        ]
+    },
+    {
+        "id": 3,
+        "title": "Xbox Serie S",
+        "price": 850000,
+        "description": "Microsoft Xbox",
+        "code": "MS003",
+        "stock": 10,
+        "category": "Consola"
+    },
+    {
+        "id": 4,
+        "title": "Xbox Serie X",
+        "price": 950000,
+        "description": "Microsoft Xbox",
+        "code": "MX003",
+        "stock": 10,
+        "category": "Consola"
+    },
+    {
+        "id": 5,
+        "title": "Sony Playstation 4 Slim",
+        "description": "Sony",
+        "price": 650000,
+        "code": "SP004",
+        "stock": 10,
+        "category": [
+            "Consola"
+        ]
+    }
+]

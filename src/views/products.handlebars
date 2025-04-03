@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/products.css">
+    <title>Listado de Productos</title>
+</head>
+<body>
+
+<h1>📦 Listado de Productos</h1>
+
+<!-- Input para ir al carrito -->
+<div class="cart-navigation">
+    <input type="text" id="cartId" placeholder="Ingrese ID de carrito" />
+    <button id="goToCartBtn" class="btn">🛒 Ir al carrito</button>
+</div>
+
+<div class="productContainer">
+    {{#each productos}}
+        <div class="productCard">
+            <h2>{{this.title}}</h2>
+            <p>{{this.description}}</p>
+            <p><strong>Precio:</strong> ${{this.price}}</p>
+            <p><strong>Categoría:</strong> {{this.category}}</p>
+            
+            <!-- Botón para ver detalles -->
+            <a href="/products/{{this._id}}" class="btn btn-primary">🔍 Ver detalles</a>
+        </div>
+    {{/each}}
+</div>
+
+<!-- Navegación de Paginación -->
+<div class="pagination">
+    {{#if hasPrevPage}}
+        <a href="?page={{prevPage}}" class="btn">⬅️ Anterior</a>
+    {{/if}}
+    <span>Página {{page}} de {{totalPages}}</span>
+    {{#if hasNextPage}}
+        <a href="?page={{nextPage}}" class="btn">➡️ Siguiente</a>
+    {{/if}}
+</div>
+
+<script>
+document.getElementById('goToCartBtn').addEventListener('click', () => {
+    const cartId = document.getElementById('cartId').value.trim();
+    if (cartId) {
+        window.location.href = `/carts/${cartId}`;
+    } else {
+        alert('Por favor, ingrese un ID de carrito válido.');
+    }
+});
+</script>
+
+</body>
+</html>
+
+

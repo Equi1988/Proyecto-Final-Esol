@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/carts.css">
+    <title>Mi Carrito</title>
+</head>
+<body>
+
+<h1>🛒 Mi Carrito</h1>
+
+<div class="productContainer">
+    {{#each productsCart}}
+        <div class="productCard">
+            <h2>{{this.product.title}}</h2>
+            <p>{{this.product.description}}</p>
+            <p><strong>Precio:</strong> ${{this.product.price}}</p>
+            <p><strong>Categoría:</strong> {{this.product.category}}</p>
+        </div>
+    {{else}}
+        <p class="emptyMessage">El carrito está vacío.</p>
+    {{/each}}
+</div>
+
+<!-- Botones de acción -->
+<div class="buttonsContainer">
+    <a href="/products" class="btn">🔙 Volver a Productos</a>
+    <a href="/checkout" class="btn btn-primary">✅ Finalizar Compra</a>
+</div>
+
+</body>
+</html>
+
+
+
+
+

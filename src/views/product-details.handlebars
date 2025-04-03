@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/productsDetail.css">
+    <title>Detalle Productos</title>
+    {{!-- <script src="/js/addToCart.js" defer></script> <!-- Vincula el script externo --> --}}
+</head>
+<body>
+    <div class="container">
+        <h1>{{producto.title}}</h1>
+        <p><strong>Descripción:</strong> {{producto.description}}</p>
+        <p><strong>Precio:</strong> ${{producto.price}}</p>
+        <p><strong>Categoría:</strong> {{producto.category}}</p>
+        <p><strong>Stock:</strong> {{producto.stock}}</p>
+
+        <!-- Input para el ID del carrito -->
+        <input type="text" id="cartId" placeholder="id carrito" />
+
+        <!-- Botón para agregar producto al carrito -->
+        <button id="addToCartBtn" data-product-id="{{producto._id}}">Agregar al carrito</button>
+        <a href="/products" class="btn">🔙 Volver a Productos</a>
+    </div>
+
+<script src="/js/addToCart.js" defer></script>
+
+</body>
+</html>
+

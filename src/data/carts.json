@@ -1,0 +1,19 @@
+[
+    {
+        "id": 1,
+        "products": [
+            {
+                "id": "1",
+                "title": "Sony Playstation PS Vita",
+                "price": 80000,
+                "quantity": 1
+            },
+            {
+                "id": "2",
+                "title": "Sony Playstation 5 Slim",
+                "price": 1200000,
+                "quantity": 1
+            }
+        ]
+    }
+]
