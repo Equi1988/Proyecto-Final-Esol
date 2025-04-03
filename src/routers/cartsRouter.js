@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { procesaErrores } from "../utils.js";
 import { cartsMongoManager } from "../dao/cartsMongoManager.js";
+import { productsModels } from "../dao/models/productsModels.js";
 import { isValidObjectId } from "mongoose";
+import mongoose from "mongoose";
 
 export const router = Router();
 
@@ -68,22 +70,61 @@ router.get("/:cid/products/:pid", async (req, res) => {
     }
 });
 
-
-// Crear un nuevo carrito
 router.post("/", async (req, res) => {
     try {
-        console.log("Body recibido en POST:", req.body); // Depura el cuerpo recibido
-        let { productos } = req.body;
+        console.log("Body recibido en POST:", req.body);
 
-        if (!productos || !Array.isArray(productos)) {
+        // Asegurar que `productos` sea un array, si no existe, se inicializa vacío
+        let productos = req.body.productos || [];
+
+        if (!Array.isArray(productos)) {
             return res.status(400).json({ error: "Debe proporcionar un arreglo de productos" });
         }
 
-        let nuevoCarrito = await cartsMongoManager.save({ productos });
+        let nuevoCarrito = await cartsMongoManager.save({ products: productos });
+
         res.status(201).json({ message: "Carrito creado correctamente", nuevoCarrito });
     } catch (error) {
-        console.error("Error en POST /api/carts:", error); // Imprime el error en consola
+        console.error("Error en POST /api/carts:", error);
         res.status(500).json({ error: "Error al crear el carrito", detalles: error.message });
+    }
+});
+
+
+
+// Crear un nuevo carrito
+router.put("/:cartId", async (req, res) => {
+    try {
+        const { cartId } = req.params;
+        let { products } = req.body;
+
+        if (!Array.isArray(products)) {
+            return res.status(400).json({ error: "Debe enviar un arreglo de productos" });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(cartId)) {
+            return res.status(400).json({ error: "ID de carrito no válido" });
+        }
+
+        const carrito = await cartsMongoManager.getById(cartId);
+        if (!carrito) {
+            return res.status(404).json({ error: "Carrito no encontrado" });
+        }
+
+        // ✅ Validar que los productos existan antes de agregarlos
+        for (const item of products) {
+            const productExists = await productsModels.findById(item.product);
+            if (!productExists) {
+                return res.status(404).json({ error: `Producto con ID ${item.product} no encontrado.` });
+            }
+        }
+
+        const updatedCart = await cartsMongoManager.update(cartId, { products });
+
+        res.status(200).json({ message: "Carrito actualizado correctamente", carrito: updatedCart });
+    } catch (error) {
+        console.error("Error en PUT /api/carts/:cartId:", error);
+        res.status(500).json({ error: "Error al actualizar el carrito", detalles: error.message });
     }
 });
 
@@ -126,6 +167,39 @@ router.get("/:cid", async (req, res) => {
         procesaErrores(error, res);
     }
 });
+        
+router.put("/:cartId", async (req, res) => {
+    try {
+        const { cartId } = req.params;
+        let { products } = req.body;
+
+        // Validar si el cartId es un ObjectId válido
+        if (!mongoose.Types.ObjectId.isValid(cartId)) {
+            return res.status(400).json({ error: "ID de carrito inválido" });
+        }
+
+        // Validar que products sea un array
+        if (!Array.isArray(products)) {
+            return res.status(400).json({ error: "Debe enviar un arreglo de productos" });
+        }
+
+        // Buscar el carrito antes de actualizarlo
+        const carrito = await cartsMongoManager.getById(cartId);
+        if (!carrito) {
+            return res.status(404).json({ error: "Carrito no encontrado" });
+        }
+
+        // Actualizar el carrito con los nuevos productos
+        const updatedCart = await cartsMongoManager.update(cartId, { products });
+
+        res.status(200).json({ message: "Carrito actualizado correctamente", carrito: updatedCart });
+    } catch (error) {
+        console.error("Error en PUT /api/carts/:cartId:", error);
+        res.status(500).json({ error: "Error al actualizar el carrito", detalles: error.message });
+    }
+});
+
+
 
 // Actualizar todos los productos del carrito
 router.put("/:cid", async (req, res) => {
@@ -136,8 +210,8 @@ router.put("/:cid", async (req, res) => {
     }
     try {
         let carrito = await cartsMongoManager.update(cid, { products });
-        if (!isValidObjectId(id)) {
-            throw new Error("ID no válido para MongoDB");
+        if (!isValidObjectId(cid)) {
+            return res.status(400).json({ error: "ID de carrito inválido" });
         }
         res.status(200).json({ message: "Productos actualizados en el carrito", carrito });
     } catch (error) {
@@ -145,22 +219,25 @@ router.put("/:cid", async (req, res) => {
     }
 });
 
-// Actualizar la cantidad de un producto en el carrito
-router.put("/:cid/products/:pid", async (req, res) => {
-    let { cid, pid } = req.params;
-    let { quantity } = req.body;
 
-    if (!quantity || typeof quantity !== "number") {
-        return res.status(400).json({ error: "Debe proporcionar una cantidad válida" });
+// Actualizar la cantidad de un producto en el carrito
+router.put("/:cartId/products/:productId", async (req, res) => {
+    const { cartId, productId } = req.params;
+    const { quantity } = req.body;
+
+    if (!quantity || quantity < 1) {
+        return res.status(400).json({ error: "La cantidad debe ser mayor a 0" });
     }
 
     try {
-        let carrito = await cartsMongoManager.updateProductQuantity(cid, pid, quantity);
-        res.status(200).json({ message: "Cantidad actualizada", carrito });
+        const carritoActualizado = await cartsMongoManager.updateProductQuantity(cartId, productId, quantity);
+        res.status(200).json({ message: "Producto agregado/actualizado correctamente", carrito: carritoActualizado });
     } catch (error) {
-        procesaErrores(error, res);
+        console.error("Error en PUT /api/carts/:cartId/products/:productId:", error);
+        res.status(500).json({ error: "Error al actualizar el carrito", detalles: error.message });
     }
 });
+
 
 // Eliminar un producto específico del carrito
 router.delete("/:cid/products/:pid", async (req, res) => {
@@ -183,6 +260,29 @@ router.delete("/:cid", async (req, res) => {
         res.status(200).json({ message: "Todos los productos eliminados del carrito", carrito });
     } catch (error) {
         procesaErrores(error, res);
+    }
+});
+
+router.delete("/:cid/product/:pid", async (req, res) => {
+    try {
+        const { cid, pid } = req.params;
+
+        let cart = await cartsMongoManager.getById(cid);
+        if (!cart) {
+            return res.status(404).json({ error: "Carrito no encontrado" });
+        }
+
+        console.log("Carrito antes de eliminar:", JSON.stringify(cart, null, 2)); // 🔍 LOG para depurar
+
+        // Filtrar solo los productos válidos antes de eliminar
+        cart.products = cart.products.filter(item => item?.product && item.product.toString() !== pid);
+
+        await cartsMongoManager.update(cid, { products: cart.products });
+
+        res.status(200).json({ message: "Producto eliminado del carrito", carrito: cart });
+    } catch (error) {
+        console.error("Error en DELETE /api/carts/:cid/product/:pid:", error);
+        res.status(500).json({ error: "Error al eliminar el producto", detalles: error.message });
     }
 });
 

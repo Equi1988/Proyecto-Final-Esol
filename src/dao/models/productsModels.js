@@ -13,6 +13,10 @@ const productosSchema = new mongoose.Schema(
         price: Number,
         stock: Number,
         category: String,
+        status: { 
+            type: Boolean, 
+            default: true // Por defecto, los productos estarán activos
+        },
         thumbnails: [],
     },
     {

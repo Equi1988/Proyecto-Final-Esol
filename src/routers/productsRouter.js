@@ -8,7 +8,7 @@ export const router = Router ()
 
 router.get("/", async (req, res) => {
     try {
-        let { page = 1, limit = 10, sort, category, available } = req.query;
+        let { page = 1, limit = 20, sort, category, available } = req.query;
 
         page = parseInt(page);
         limit = parseInt(limit);
