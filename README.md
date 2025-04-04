@@ -66,11 +66,11 @@ El servidor se ejecutará en `http://localhost:8080`.
 - **Body (JSON)**:
   ```json
   {
-    "title": "Camiseta",
-    "description": "Camiseta de algodón",
-    "price": 20,
-    "category": "ropa",
-    "stock": 100
+    "title": "Sega Bit 8",
+    "description": "Consola Sega",
+    "price": 100000,
+    "category": "Consola",
+    "stock": 1
   }
   ```
 
@@ -113,6 +113,10 @@ El servidor se ejecutará en `http://localhost:8080`.
 
 ## 🎨 Vistas disponibles
 
+## Home
+- **URL:** `http://localhost:8080`
+- Ingresar a ver todos los productos o cargar un nuevo producto.
+
 ### Productos
 - **URL:** `http://localhost:8080/products`
 - Permite ver todos los productos con paginación y botones de compra.
@@ -124,6 +128,10 @@ El servidor se ejecutará en `http://localhost:8080`.
 ### Carrito
 - **URL:** `http://localhost:8080/carts/:cid`
 - Lista los productos añadidos a un carrito específico.
+
+### Real Time Products
+- **URL:** `http://localhost:8080/realtimeproducts`
+- Sirve para ingresar producto en tiempo real.
 
 ---
 

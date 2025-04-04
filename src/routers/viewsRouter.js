@@ -5,6 +5,12 @@ import { cartsMongoManager } from "../dao/cartsMongoManager.js"; // Importar el 
 
 export const router = Router();
 
+//Vista LocalHost
+router.get('/', (req, res) => {
+    res.render('home'); // Renderiza home.handlebars
+});
+
+
 // Mostrar detalles de un producto
 router.get('/products/:pid', async (req, res) => {
     const { pid } = req.params;
