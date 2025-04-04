@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/products.css">
+    <title>Productos en Tiempo Real</title>
+</head>
+<body>
+
+    <h1>⚡ Productos en Tiempo Real</h1>
+
+    <!-- Navegación -->
+    <div class="cart-navigation">
+        <a href="/products" class="btn">📦 Ver Productos</a>
+    </div>
+
+    <!-- Formulario de carga -->
+    <div class="form-container">
+        <form id="addProductForm" class="styled-form">
+            <input type="text" id="productName" placeholder="Nombre" required class="input-small">
+            <span id="productNameError" class="error-message"></span>
+
+            <input type="number" id="productPrice" placeholder="Precio" required class="input-small">
+            <span id="productPriceError" class="error-message"></span>
+
+            <input type="text" id="productDescription" placeholder="Descripción" required class="input-small">
+            <span id="productDescriptionError" class="error-message"></span>
+
+            <input type="text" id="productCode" placeholder="Código" required class="input-small">
+            <span id="productCodeError" class="error-message"></span>
+
+            <input type="number" id="productStock" placeholder="Stock" required class="input-small">
+            <span id="productStockError" class="error-message"></span>
+
+            <input type="text" id="productCategory" placeholder="Categoría" required class="input-small">
+            <span id="productCategoryError" class="error-message"></span>
+
+            <button type="submit" class="btn">➕ Agregar Producto</button>
+        </form>
+    </div>
+
+    <!-- Listado en tiempo real -->
+    <div id="product-list" class="productContainer"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        function renderProducts(products) {
+            const productList = document.getElementById("product-list");
+            productList.innerHTML = "";
+            products.forEach(product => {
+                const div = document.createElement("div");
+                div.classList.add("productCard");
+                div.innerHTML = `
+                    <h2>${product.title}</h2>
+                    <p>${product.description}</p>
+                    <p><strong>Precio:</strong> $${product.price}</p>
+                    <p><strong>Categoría:</strong> ${product.category}</p>
+                    <p><strong>Stock:</strong> ${product.stock}</p>
+                `;
+                productList.appendChild(div);
+            });
+        }
+
+        socket.on("updateProducts", (products) => {
+            renderProducts(products);
+        });
+
+        document.getElementById("addProductForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const newProduct = {
+                title: document.getElementById("productName").value,
+                price: parseFloat(document.getElementById("productPrice").value),
+                description: document.getElementById("productDescription").value,
+                code: document.getElementById("productCode").value,
+                stock: parseInt(document.getElementById("productStock").value),
+                category: document.getElementById("productCategory").value
+            };
+
+            socket.emit("addProduct", newProduct);
+            e.target.reset();
+        });
+    </script>
+</body>
+</html>

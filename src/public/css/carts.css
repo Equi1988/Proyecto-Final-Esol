@@ -1,92 +1,97 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
     margin: 0;
-    padding: 20px;
-    text-align: center;
+    padding: 2rem;
+    color: #333;
 }
 
 h1 {
-    color: #333;
+    text-align: center;
+    margin-bottom: 2rem;
     font-size: 2rem;
-    margin-bottom: 20px;
-}
-
-.productContainer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
 }
 
 .productCard {
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    text-align: left;
-    transition: transform 0.2s ease-in-out;
+    background-color: #fff;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+    position: relative;
+    transition: transform 0.2s ease, opacity 0.3s ease;
 }
 
 .productCard:hover {
-    transform: scale(1.05);
+    transform: translateY(-3px);
 }
 
-h2 {
-    color: #444;
-    font-size: 1.5rem;
-    margin-bottom: 10px;
+.productCard h2 {
+    margin-top: 0;
+    font-size: 1.3rem;
 }
 
-p {
-    color: #666;
-    font-size: 1rem;
-    margin-bottom: 5px;
+.productCard p {
+    margin: 0.3rem 0;
 }
 
-strong {
-    color: #222;
+.deleteBtn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    transition: background-color 0.2s ease;
 }
 
-.emptyMessage {
-    font-size: 1.2rem;
-    color: #888;
-    margin-top: 20px;
+.deleteBtn:hover {
+    background-color: #e60000;
 }
 
 .buttonsContainer {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
+    gap: 1rem;
+    margin-top: 2rem;
 }
 
 .btn {
+    background-color: #6c757d;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
     text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: 0.3s ease;
-    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn:hover {
+    background-color: #5a6268;
 }
 
 .btn-primary {
     background-color: #28a745;
-    color: white;
 }
 
 .btn-primary:hover {
     background-color: #218838;
 }
 
-.btn {
-    background-color: #007bff;
-    color: white;
+/* Animación para eliminar */
+.fadeOut {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.btn:hover {
-    background-color: #0056b3;
+.emptyCart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    font-size: 1.2rem;
+    color: #555;
 }
-

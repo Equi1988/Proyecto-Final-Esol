@@ -263,26 +263,17 @@ router.delete("/:cid", async (req, res) => {
     }
 });
 
-router.delete("/:cid/product/:pid", async (req, res) => {
+router.delete("/:cid/products/:pid", async (req, res) => {
     try {
         const { cid, pid } = req.params;
-
-        let cart = await cartsMongoManager.getById(cid);
-        if (!cart) {
-            return res.status(404).json({ error: "Carrito no encontrado" });
-        }
-
-        console.log("Carrito antes de eliminar:", JSON.stringify(cart, null, 2)); // 🔍 LOG para depurar
-
-        // Filtrar solo los productos válidos antes de eliminar
-        cart.products = cart.products.filter(item => item?.product && item.product.toString() !== pid);
-
-        await cartsMongoManager.update(cid, { products: cart.products });
-
-        res.status(200).json({ message: "Producto eliminado del carrito", carrito: cart });
+        const carrito = await cartsManager.removeProduct(cid, pid);
+        res.json({
+            message: "Producto eliminado del carrito",
+            carrito,
+        });
     } catch (error) {
-        console.error("Error en DELETE /api/carts/:cid/product/:pid:", error);
-        res.status(500).json({ error: "Error al eliminar el producto", detalles: error.message });
+        res.status(404).json({ error: error.message });
     }
 });
+
 

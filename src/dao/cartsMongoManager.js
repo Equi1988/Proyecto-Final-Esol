@@ -1,25 +1,17 @@
 import mongoose from "mongoose";
 import { cartsModels } from "./models/cartsModels.js";
+import { productsModels } from "./models/productsModels.js";
+
 
 export class cartsMongoManager {
     static async get() {
         return await cartsModels.find().lean();
     }
 
-    static async getBy(filtro = {}) {
-        return await cartsModels.findOne(filtro).lean();
+    async getById(id) {
+        return await cartModel.findById(id).populate("products.product").lean();
     }
-
-    // static async save(cart) {
-    //     const formattedCart = {
-    //         products: cart.productos.map(p => ({
-    //             product: new mongoose.Types.ObjectId(p.product),
-    //             quantity: p.quantity
-    //         }))
-    //     };
-    //     return await cartsModels.create(formattedCart);
-    // }
-
+    
     static async save(cart) {
         return await cartsModels.create({
             products: Array.isArray(cart.products) ? cart.products.map(product => ({
@@ -74,29 +66,6 @@ export class cartsMongoManager {
         await carrito.save();
         return carrito;
     }
-    // static async addProduct(cartId, productId) {
-    //     try {
-    //         const cart = await cartsModels.findById(cartId);
-    //         if (!cart) {
-    //             throw new Error("Carrito no encontrado.");
-    //         }
-
-    //         const productInCart = cart.products.find(item => item.product.toString() === productId);
-
-    //         if (productInCart) {
-    //             productInCart.quantity += 1;
-    //         } else {
-    //             cart.products.push({ product: productId, quantity: 1 });
-    //         }
-
-    //         await cart.save();
-    //         return await cartsModels.findById(cartId).populate("products.product").lean();
-    //     } catch (error) {
-    //         console.error("Error en addProduct:", error);
-    //         throw error;
-    //     }
-    // }
-
     static async addProduct(cartId, productId) {
         try {
             const cart = await cartsModels.findById(cartId);
@@ -125,5 +94,23 @@ export class cartsMongoManager {
             throw error;
         }
     }
-
+    static async removeProduct(cartId, productId) {
+        const cart = await cartsModels.findById(cartId);
+        if (!cart) throw new Error("Carrito no encontrado");
+    
+        const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
+    
+        if (productIndex === -1) {
+            throw new Error("Producto no encontrado en el carrito");
+        }
+    
+        cart.products.splice(productIndex, 1);
+        await cart.save();
+        return await cart.populate("products.product");
+    }
+    
+    
 }
+
+
+

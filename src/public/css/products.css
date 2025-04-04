@@ -87,12 +87,9 @@ h1 {
 .pagination {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.pagination span {
-    font-weight: bold;
+    align-items: center;
+    gap: 1rem; /* Espacio entre botones y texto */
+    margin-top: 2rem;
 }
 
 /* Navegación al carrito */

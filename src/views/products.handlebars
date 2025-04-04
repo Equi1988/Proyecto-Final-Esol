@@ -30,16 +30,24 @@
     {{/each}}
 </div>
 
+<div class="cart-navigation">
+    <a href="/realTimeProducts" class="btn">⚡ Productos en Tiempo Real </a>
+</div>
+
 <!-- Navegación de Paginación -->
 <div class="pagination">
     {{#if hasPrevPage}}
         <a href="?page={{prevPage}}" class="btn">⬅️ Anterior</a>
     {{/if}}
+
     <span>Página {{page}} de {{totalPages}}</span>
+
     {{#if hasNextPage}}
         <a href="?page={{nextPage}}" class="btn">➡️ Siguiente</a>
     {{/if}}
 </div>
+
+
 
 <script>
 document.getElementById('goToCartBtn').addEventListener('click', () => {

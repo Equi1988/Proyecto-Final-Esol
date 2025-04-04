@@ -1,38 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/carts.css">
     <title>Mi Carrito</title>
+    <link rel="stylesheet" href="/css/carts.css">
 </head>
+
 <body>
+    <h1>🛒 Carrito</h1>
 
-<h1>🛒 Mi Carrito</h1>
-
-<div class="productContainer">
-    {{#each productsCart}}
-        <div class="productCard">
+    <div id="cartContainer" data-cart-id="{{cartId}}">
+        {{#if productsCart.length}}
+        {{#each productsCart}}
+        <div class="productCard" data-product-id="{{this.product._id}}">
             <h2>{{this.product.title}}</h2>
             <p>{{this.product.description}}</p>
             <p><strong>Precio:</strong> ${{this.product.price}}</p>
-            <p><strong>Categoría:</strong> {{this.product.category}}</p>
+            <p><strong>Cantidad:</strong> {{this.quantity}}</p>
+            <button class="deleteBtn">🗑️ Eliminar</button>
         </div>
-    {{else}}
-        <p class="emptyMessage">El carrito está vacío.</p>
-    {{/each}}
-</div>
+        {{/each}}
+        {{else}}
+        <div class="emptyCart">
+            <p>El carrito está vacío.</p>
+        </div>
 
-<!-- Botones de acción -->
-<div class="buttonsContainer">
-    <a href="/products" class="btn">🔙 Volver a Productos</a>
-    <a href="/checkout" class="btn btn-primary">✅ Finalizar Compra</a>
-</div>
+        {{/if}}
+    </div>
+
+    <div class="buttonsContainer">
+        <a href="/products" class="btn">🔙 Volver a Productos</a>
+        <a href="/checkout" class="btn btn-primary">✅ Finalizar Compra</a>
+    </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const cartId = document.getElementById("cartContainer").dataset.cartId;
+        const deleteButtons = document.querySelectorAll(".deleteBtn");
+
+        deleteButtons.forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+                const productCard = e.target.closest(".productCard");
+                const productId = productCard.dataset.productId;
+
+                try {
+                    const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+                        method: "DELETE",
+                    });
+
+                    console.log("Estado de la respuesta:", response.status); // ✅ dentro del try
+
+                    if (!response.ok) {
+                        throw new Error("Error al eliminar el producto");
+                    }
+
+                    productCard.classList.add("fadeOut");
+                    setTimeout(() => productCard.remove(), 300);
+                } catch (err) {
+                    console.error(err);
+                    alert("Error al eliminar el producto");
+                }
+            });
+        });
+
+        // ❌ Esto debe eliminarse si sigue apareciendo:
+        // console.log("Estado de la respuesta:", response.status);
+    });
+</script>
 
 </body>
+
 </html>
-
-
-
-
-
